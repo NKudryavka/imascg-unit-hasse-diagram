@@ -1,0 +1,7 @@
+PREFIX schema: <http://schema.org/>
+
+SELECT ?idol ?belonging
+WHERE {
+  ?s schema:name ?idol;
+     schema:memberOf ?belonging.
+} 

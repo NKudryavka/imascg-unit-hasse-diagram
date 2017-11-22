@@ -1,0 +1,33 @@
+{
+  "name": "imas-unit-hasse-diagram",
+  "version": "0.0.1",
+  "description": "Visualize units of idolm@ster series.",
+  "main": "index.js",
+  "dependencies": {
+    "coffeescript": "^2.0.2",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-pug": "^3.3.0",
+    "npm-run-all": "^4.1.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-dev": "npm-run-all -p build:*",
+    "build:html": "gulp build:html",
+    "build:js": "gulp build:js",
+    "build:css": "gulp build:css",
+    "build:img": "gulp build:img",
+    "build": "npm-run-all -p build:html build:js build:css build:img fetch-db",
+    "fetch-db": "coffee fetch.coffee",
+    "watch": "npm-run-all -p watch:*",
+    "watch:html": "gulp watch:html",
+    "watch:js": "gulp watch:js",
+    "watch:css": "gulp watch:css"
+  },
+  "author": "NKudryavka"
+}
