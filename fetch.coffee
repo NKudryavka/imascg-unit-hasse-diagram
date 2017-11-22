@@ -9,7 +9,7 @@ funcs =
     r = {}
     res.forEach (v) -> 
       r[v.unit.value] = [] unless r[v.unit.value]?
-      r[v.unit.value].push v.member.value unless v.member.value in r[v.unit.value]
+      r[v.unit.value].push v.member.value
     r
   belonging: (res) ->
     r = {}
@@ -26,7 +26,7 @@ saveDir = 'site/data'
 unless fs.existsSync saveDir
   fs.mkdirSync saveDir
 
-intersection = (a, b) -> a.filter (v) -> !(v in b)
+intersection = (a, b) -> a.filter (v) -> v in b
 
 Promise.all (rp({uri: url, qs: {query: fs.readFileSync("sparqls/#{q}.sparql"), format: 'json'}}) for q in queries)
 .then (results) ->
@@ -50,9 +50,8 @@ Promise.all (rp({uri: url, qs: {query: fs.readFileSync("sparqls/#{q}.sparql"), f
     .reduce intersection
     if belongs.length == 1
       addBelongings belongs[0], unit, members
-    else if belongs.length == 2 and belongs.indexOf('765AS') >= 0 and belongs.indexOf('MillionStars')
+    else if belongs.length == 2 and '765AS' in belongs and 'MillionStars' in belongs
       addBelongings '765AS', unit, members
-
   belongings
 .then (data) ->
   result = {}
