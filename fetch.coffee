@@ -19,6 +19,9 @@ funcs =
       r[v.idol.value].push 'MillionStars' if v.belonging.value == '765AS'
     r
 
+unless fs.existsSync 'site'
+  fs.mkdirSync 'site'
+
 saveDir = 'site/data'
 unless fs.existsSync saveDir
   fs.mkdirSync saveDir
