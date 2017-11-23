@@ -25,7 +25,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
     for belongs, nodes of allData
       continue unless belongs == 'CinderellaGirls'
-      defxs = [{line: 6}, {line: 1}, {line: 5}, {line: 5}, {line: 2}, {line: 2}, {line: 1}]
+      defxs = [{line: 6}, {line: 1}, {line: 5}, {line: 6}, {line: 2}, {line: 2}, {line: 1}]
       yPositions = defxs.map((v) -> v.line).reverse().reduce((b, v) ->
         if b.length > 0
           bb = b[b.length-1]
