@@ -46,7 +46,7 @@ Promise.all (rp({uri: url, qs: {query: fs.readFileSync("sparqls/#{q}.sparql"), f
 
   for unit, members of data.units
     belongs = members
-    .map (n) -> data.belonging[n]
+    .map (n) -> data.belonging[n] || []
     .reduce intersection
     if belongs.length == 1
       addBelongings belongs[0], unit, members

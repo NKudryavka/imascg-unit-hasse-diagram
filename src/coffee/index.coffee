@@ -12,8 +12,11 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
     
     fontSize = 9
     centerX = 900
+    levelHeight = 120
     selectedColor = 'red'
     associatedColor = '#07f'
+
+    rowSpace = 2 * fontSize + 4
     measureWidth = document.getElementById 'measureWidth'
     getTextWidth = (text) ->
       measureWidth.textContent = text
@@ -22,20 +25,30 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
     for belongs, nodes of allData
       continue unless belongs == 'CinderellaGirls'
-      defxs = [{line: 6}, {line: 1}, {line: 4}, {line: 4}, {line: 2}, {line: 2}, {line: 1}]
+      defxs = [{line: 6}, {line: 1}, {line: 5}, {line: 5}, {line: 2}, {line: 2}, {line: 1}]
+      yPositions = defxs.map((v) -> v.line).reverse().reduce((b, v) ->
+        if b.length > 0
+          bb = b[b.length-1]
+          b.push 
+            top: bb.bottom + levelHeight
+            bottom: bb.bottom + levelHeight + (v-1)*rowSpace
+          b
+        else
+          [{top:rowSpace, bottom:v*rowSpace}]
+      , []).map((v) -> v.top).reverse()
       units = {}
       nodes = nodes.map (n) ->
         units[n.name] = n
         n.level = if n.members.length > 5 then 6 else n.members.length
         n.level = 0 if n.level == 1 and n.members[0] == n.name
         n.width = getTextWidth(n.name) + 10
-        n.fy = 950 - n.level*150
+        n.fy = yPositions[n.level] || rowSpace
         n
       .sort (a, b) -> a.level - b.level
       .map (n, i) ->
         i %= defxs[n.level].line
         n.fx = (defxs[n.level][i] || 0) + n.width/2 + 5
-        n.fy += i * (2*fontSize+4)
+        n.fy += i * rowSpace
         defxs[n.level][i] = (defxs[n.level][i] || 0) + n.width + 5
         n
       .map (n, i) ->
