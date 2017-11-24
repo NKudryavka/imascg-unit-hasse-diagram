@@ -106,6 +106,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
         .style 'stroke', 'black'
         nodeEnter.selectAll 'text'
         .style 'fill', 'black'
+        nodeEnter.style 'opacity', '0.5'
 
       makeFrontEdge = ->
         d3.select(@).node().parentNode.insertBefore d3.select(@).node(), d3.select('.node').node()
@@ -114,6 +115,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
         returnDefault()
         # clicked node
         node = nodeEnter.filter (d) -> d == cd
+        node.style 'opacity', '1'
         node.selectAll 'rect'
         .style 'stroke', selectedColor
         node.selectAll 'text'
@@ -128,6 +130,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
           .style 'stroke-width', '2px'
           .style 'visibility', 'visible'
           upPaths.each makeFrontEdge
+          ancestors.style 'opacity', '1'
           ancestors.selectAll 'rect'
           .style 'stroke', associatedColor
           ancestors.selectAll 'text'
@@ -144,6 +147,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
           .style 'stroke-width', '2px'
           .style 'visibility', 'visible'
           downPaths.each makeFrontEdge
+          children.style 'opacity', '1'
           children.selectAll 'rect'
           .style 'stroke', associatedColor
           children.selectAll 'text'
