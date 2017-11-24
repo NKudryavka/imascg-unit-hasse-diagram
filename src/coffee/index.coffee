@@ -14,7 +14,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
     centerX = 900
     levelHeight = 120
     selectedColor = 'red'
-    associatedColor = '#07f'
+    associatedColor = '#05f'
 
     rowSpace = 2 * fontSize + 4
     measureWidth = document.getElementById 'measureWidth'
@@ -90,8 +90,6 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .attr "class", "edge"
 
       edgeEnter.append "line"
-      .style "stroke-width", '1px'
-      .style "stroke", "black"
       .style "pointer-events", "none"
 
       nodeEnter = d3.select("svg.main").selectAll("g.node")
@@ -101,8 +99,9 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
       returnDefault = ->
         edgeEnter.selectAll 'line'
-        .style 'stroke', 'black'
+        .style 'stroke', '#eee'
         .style 'stroke-width', '1px'
+        #.style 'visibility', 'hidden'
         nodeEnter.selectAll 'rect'
         .style 'stroke', 'black'
         nodeEnter.selectAll 'text'
@@ -127,6 +126,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
           upPaths.selectAll 'line'
           .style 'stroke', associatedColor
           .style 'stroke-width', '2px'
+          .style 'visibility', 'visible'
           upPaths.each makeFrontEdge
           ancestors.selectAll 'rect'
           .style 'stroke', associatedColor
@@ -142,6 +142,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
           downPaths.selectAll 'line'
           .style 'stroke', associatedColor
           .style 'stroke-width', '2px'
+          .style 'visibility', 'visible'
           downPaths.each makeFrontEdge
           children.selectAll 'rect'
           .style 'stroke', associatedColor
@@ -158,7 +159,6 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .attr "rx", 2
       .attr "ry", 2
       .style "fill", "white"
-      .style "stroke", "black"
       .style "stroke-width", '1.5px'
 
       ### 的場梨沙ちゃんをよろしくお願いします ###
@@ -178,6 +178,8 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .style "font-size", "#{fontSize}px"
       .text (d) -> d.name
       .style "pointer-events", "none"
+
+      returnDefault()
 
       ### 的場梨沙ちゃんをよろしくお願いします ###
       matobaRisa = document.getElementById 'matoba-risa'
