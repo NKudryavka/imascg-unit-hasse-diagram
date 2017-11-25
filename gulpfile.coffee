@@ -2,12 +2,13 @@ gulp = require 'gulp'
 concat = require 'gulp-concat'
 coffee = require 'gulp-coffee'
 pug = require 'gulp-pug'
+sass = require 'gulp-sass'
 plumber = require 'gulp-plumber'
 
 path = 
   coffee: ['src/coffee/datas/*.coffee', 'src/coffee/*.coffee']
   pug: 'src/pug/*.pug'
-  css: 'src/css/*.css'
+  css: 'src/sass/*.sass'
   img: 'src/img/*.png'
 
 gulp.task 'build:js', ->
@@ -25,6 +26,8 @@ gulp.task 'build:html', ->
 
 gulp.task 'build:css', ->
   gulp.src path.css
+    .pipe plumber()
+    .pipe sass outputStyle: 'compressed'
     .pipe gulp.dest('site/css/')
 
 gulp.task 'build:img', ->

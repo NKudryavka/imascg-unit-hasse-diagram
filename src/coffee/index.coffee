@@ -13,8 +13,10 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
     fontSize = 9
     centerX = 900
     levelHeight = 120
-    selectedColor = 'red'
-    associatedColor = '#05f'
+    classes = 
+      selected: 'selected'
+      inclusion: 'inclusion'
+      associated: 'associated'
 
     rowSpace = 2 * fontSize + 4
     measureWidth = document.getElementById 'measureWidth'
@@ -77,12 +79,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
         .attr "transform", (d) -> "translate(#{d.x},#{d.y})"
 
       force = d3.forceSimulation nodes
-      #.force "charge", manyBody
       .force "link", linkForce
-      #.force "center", networkCenter
-      #.force "x", forceX
-      #.force "y", forceY
-      #.force "collide", collideForce
       .on "tick", updateNetwork
 
       edgeEnter = d3.select("svg.main").selectAll("g.edge")
@@ -90,7 +87,6 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .attr "class", "edge"
 
       edgeEnter.append "line"
-      .style "pointer-events", "none"
 
       nodeEnter = d3.select("svg.main").selectAll("g.node")
       .data nodes, (d) -> d.name
@@ -98,62 +94,51 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .attr "class", "node"
 
       returnDefault = ->
-        edgeEnter.selectAll 'line'
-        .style 'stroke', '#eee'
-        .style 'stroke-width', '1px'
-        #.style 'visibility', 'hidden'
-        nodeEnter.selectAll 'rect'
-        .style 'stroke', 'black'
-        nodeEnter.selectAll 'text'
-        .style 'fill', 'black'
-        nodeEnter.style 'opacity', '0.5'
+        for k, v of classes
+          edgeEnter.classed v, false
+          nodeEnter.classed v, false
 
       makeFrontEdge = ->
         d3.select(@).node().parentNode.insertBefore d3.select(@).node(), d3.select('.node').node()
       
+      getAncestors = (node) ->
+        res = [[], []]
+        loop
+          up = edgeEnter.filter (d) -> d.target in node.data()
+          node = nodeEnter.filter (d) -> not up.filter((p) -> p.source == d).empty()
+          res = [res[0].concat(up.data()), res[1].concat(node.data())]
+          break if up.empty()
+        [edgeEnter.filter((d) -> d in res[0]), nodeEnter.filter((d) -> d in res[1])]
+
+      getChildren = (node) ->
+        res = [[], []]
+        loop
+          down = edgeEnter.filter (d) -> d.source in node.data()
+          node = nodeEnter.filter (d) -> not down.filter((p) -> p.target == d).empty()
+          res = [res[0].concat(down.data()), res[1].concat(node.data())]
+          break if down.empty()
+        [edgeEnter.filter((d) -> d in res[0]), nodeEnter.filter((d) -> d in res[1])]
+
       nodeEnter.on 'click', (cd) ->
         returnDefault()
         # clicked node
         node = nodeEnter.filter (d) -> d == cd
-        node.style 'opacity', '1'
-        node.selectAll 'rect'
-        .style 'stroke', selectedColor
-        node.selectAll 'text'
-        .style 'fill', selectedColor
+        node.classed classes.selected, true
 
-        # ancestors
-        upPaths = edgeEnter.filter (d) -> d.target == cd
-        ancestors = nodeEnter.filter (d) -> upPaths.filter((p) -> p.source == d).size() > 0
-        while upPaths.size() > 0
-          upPaths.selectAll 'line'
-          .style 'stroke', associatedColor
-          .style 'stroke-width', '2px'
-          .style 'visibility', 'visible'
-          upPaths.each makeFrontEdge
-          ancestors.style 'opacity', '1'
-          ancestors.selectAll 'rect'
-          .style 'stroke', associatedColor
-          ancestors.selectAll 'text'
-          .style 'fill', associatedColor
-          upPaths = edgeEnter.filter (d) -> d.target in ancestors.data()
-          ancestors = nodeEnter.filter (d) -> upPaths.filter((p) -> p.source == d).size() > 0
+        # inclusion
+        [upPaths, ancestors] = getAncestors node
+        [downPaths, children] = getChildren node
 
-        # children
-        downPaths = edgeEnter.filter (d) -> d.source == cd
-        children = nodeEnter.filter (d) -> downPaths.filter((p) -> p.target == d).size() > 0
-        while downPaths.size() > 0
-          downPaths.selectAll 'line'
-          .style 'stroke', associatedColor
-          .style 'stroke-width', '2px'
-          .style 'visibility', 'visible'
-          downPaths.each makeFrontEdge
-          children.style 'opacity', '1'
-          children.selectAll 'rect'
-          .style 'stroke', associatedColor
-          children.selectAll 'text'
-          .style 'fill', associatedColor
-          downPaths = edgeEnter.filter (d) -> d.source in children.data()
-          children = nodeEnter.filter (d) -> downPaths.filter((p) -> p.target == d).size() > 0
+        # associated
+        getChildren ancestors
+        .map((g) -> g.classed classes.associated, true)[0].each makeFrontEdge
+        getAncestors children
+        .map((g) -> g.classed classes.associated, true)[0].each makeFrontEdge
+
+        [upPaths, downPaths].map (s) -> s.each makeFrontEdge
+        [upPaths, ancestors, downPaths, children].map (s) ->
+          s.classed classes.associated, false
+          s.classed classes.inclusion, true
 
       nodeEnter.append "rect"
       .attr "x", (d) -> -d.width/2
@@ -162,26 +147,20 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .attr "height", fontSize*2
       .attr "rx", 2
       .attr "ry", 2
-      .style "fill", "white"
-      .style "stroke-width", '1.5px'
 
       ### 的場梨沙ちゃんをよろしくお願いします ###
       nodeEnter.append "text"
-      .style "text-anchor", "middle"
+      .classed 'svg-text-outer', true
       .attr "y", 3
       .style "stroke-width", (d) -> if d.name == '的場梨沙' then '0px' else "1px"
-      .style "stroke-opacity", 0.75
-      .style "stroke", "white"
       .style "font-size", "#{fontSize}px"
       .text (d) -> d.name
-      .style "pointer-events", "none"
 
       nodeEnter.append "text"
-      .style "text-anchor", "middle"
+      .classed 'svg-text-inner', true
       .attr "y", 3
       .style "font-size", "#{fontSize}px"
       .text (d) -> d.name
-      .style "pointer-events", "none"
 
       returnDefault()
 

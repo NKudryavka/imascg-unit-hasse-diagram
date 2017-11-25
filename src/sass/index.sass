@@ -1,0 +1,54 @@
+$selectedColor: red
+$inclusionColor: #05f
+$associatedColor: black
+
+#diagram 
+  width: 1800px
+  height: 1200px
+  margin: 0 auto
+  svg
+    width: 100%
+    height: 100%
+
+
+g.edge
+  line
+    stroke: #eee
+    stroke-width: 1px
+    pointer-events: none
+  &.inclusion line
+    stroke: $inclusionColor
+    stroke-width: 2px
+  &.associated line
+    stroke: $associatedColor
+
+g.node
+  cursor: pointer
+  opacity: 0.5
+  rect
+    fill: white
+    stroke-width: 1.5px
+    stroke: black
+  text
+    text-anchor: middle
+    fill: black
+    &.svg-text-outer 
+      stroke-opacity: 0.75
+      stroke: white
+
+  &.selected
+    opacity: 1
+    rect
+      stroke: $selectedColor
+    text
+      fill: $selectedColor
+
+  &.inclusion
+    opacity: 1
+    rect
+      stroke: $inclusionColor
+    text
+      fill: $inclusionColor
+
+  &.associated
+    opacity: 1
