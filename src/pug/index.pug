@@ -1,13 +1,23 @@
 doctype html
+- var title = "アイドルマスターシンデレラガールズユニットハッセ図"
 html(lang="ja")
   head
     meta(charset="utf-8")
-    title アイドルマスターシンデレラガールズユニットハッセ図
+    title #{title}
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous")
     link(rel="stylesheet" href="css/index.css")
+    link(rel="icon" href="img/risa-icon.png" type="image/png")
+    link(rel="canonical" href="/imascg-unit-hasse-diagram/")
+
+    //- Twitter cards and open graph
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:creator" content="@ssasasssaassasa")
+    meta(property="og:title" content=title)
+    meta(property="og:description" content="アイドルマスターシンデレラガールズのユニットの包含関係を分かりやすく表示")
+    meta(property="og:image" content="https://nkudryavka.github.io/imascg-unit-hasse-diagram/img/risa-association.png")
   body
     div.container
-      h1 アイドルマスターシンデレラガールズユニットハッセ図
+      h2 #{title}
       p ユニットやアイドルの名前をクリックすると含む/含まれるユニットとアイドルを青で、青で表示されたユニットやアイドルを含む/含まれるユニットとアイドルは黒で表示します。（アイドルをクリックした時、黒になるのは何らかのユニットで共演経験のあるアイドルになり、ユニットをクリックした時はそのユニットのアイドルが出ている他のユニットと、そのユニットを含むユニットにいる他のアイドルになります）<br>単にユニットを集合、アイドルを要素として見た時に包含関係にあるかどうかを調べています。
       p データは
         a(href="https://sparql.crssnky.xyz/imas/") im@sparql
