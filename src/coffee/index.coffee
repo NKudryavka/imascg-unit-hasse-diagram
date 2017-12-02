@@ -39,7 +39,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       .sort (a, b) -> a.level - b.level
       nodes.forEach (n) -> levelAllWidths[n.level] = n.width + (levelAllWidths[n.level] || 0)
       levelAllWidths.forEach (w, l) -> defxs[l].line = Math.ceil(w/wrapWidth)
-      
+
       yPositions = defxs.map((v) -> v.line).reverse().reduce((b, v) ->
         if b.length > 0
           bb = b[b.length-1]
@@ -51,14 +51,15 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
           [{top:rowSpace, bottom:v*rowSpace}]
       , []).map((v) -> v.top).reverse()
 
-      nodes = nodes.map (n, i) ->
-        i %= defxs[n.level].line
-        n.fx = (defxs[n.level][i] || 0) + n.width/2 + 5
-        n.fy = (yPositions[n.level] || rowSpace) + i * rowSpace
-        defxs[n.level][i] = (defxs[n.level][i] || 0) + n.width + 5
+      nodes = nodes.map (n) ->
+        temp = (defxs[n.level][l] || 0 for l in [0...defxs[n.level].line])
+        n.sublevel = temp.indexOf Math.min temp...
+        n.fx = (defxs[n.level][n.sublevel] || 0) + n.width/2 + 5
+        n.fy = (yPositions[n.level] || rowSpace) + n.sublevel * rowSpace
+        defxs[n.level][n.sublevel] = (defxs[n.level][n.sublevel] || 0) + n.width + 5
         n
-      .map (n, i) ->
-        n.fx += centerX - defxs[n.level][i%defxs[n.level].line]/2
+      .map (n) ->
+        n.fx += centerX - defxs[n.level][n.sublevel]/2
         n
       edges = nodes.map (n) -> n.includes.map (i) -> {source: n.name, target: i}
       edges = [].concat edges...
