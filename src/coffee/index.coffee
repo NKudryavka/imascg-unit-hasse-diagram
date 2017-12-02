@@ -11,13 +11,15 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
     return console.log err if err
     
     fontSize = 9
-    centerX = 900
+    canvasWidth = 1800
     levelHeight = 120
     classes = 
       selected: 'selected'
       inclusion: 'inclusion'
       associated: 'associated'
 
+    centerX = canvasWidth / 2
+    wrapWidth = canvasWidth - 200
     rowSpace = 2 * fontSize + 4
     measureWidth = document.getElementById 'measureWidth'
     getTextWidth = (text) ->
@@ -27,7 +29,17 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
     for belongs, nodes of allData
       continue unless belongs == 'CinderellaGirls'
-      defxs = [{line: 6}, {line: 1}, {line: 6}, {line: 6}, {line: 2}, {line: 2}, {line: 1}]
+      defxs = [{}, {}, {}, {}, {}, {}, {}]
+      levelAllWidths = [0,0,0,0,0,0,0]
+      nodes = nodes.map (n) ->
+        n.level = if n.members.length > 5 then 6 else n.members.length
+        n.level = 0 if n.level == 1 and n.members[0] == n.name
+        n.width = getTextWidth(n.name) + 10
+        n
+      .sort (a, b) -> a.level - b.level
+      nodes.forEach (n) -> levelAllWidths[n.level] = n.width + (levelAllWidths[n.level] || 0)
+      levelAllWidths.forEach (w, l) -> defxs[l].line = Math.ceil(w/wrapWidth)
+      
       yPositions = defxs.map((v) -> v.line).reverse().reduce((b, v) ->
         if b.length > 0
           bb = b[b.length-1]
@@ -38,19 +50,11 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
         else
           [{top:rowSpace, bottom:v*rowSpace}]
       , []).map((v) -> v.top).reverse()
-      units = {}
-      nodes = nodes.map (n) ->
-        units[n.name] = n
-        n.level = if n.members.length > 5 then 6 else n.members.length
-        n.level = 0 if n.level == 1 and n.members[0] == n.name
-        n.width = getTextWidth(n.name) + 10
-        n.fy = yPositions[n.level] || rowSpace
-        n
-      .sort (a, b) -> a.level - b.level
-      .map (n, i) ->
+
+      nodes = nodes.map (n, i) ->
         i %= defxs[n.level].line
         n.fx = (defxs[n.level][i] || 0) + n.width/2 + 5
-        n.fy += i * rowSpace
+        n.fy = (yPositions[n.level] || rowSpace) + i * rowSpace
         defxs[n.level][i] = (defxs[n.level][i] || 0) + n.width + 5
         n
       .map (n, i) ->
@@ -59,14 +63,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       edges = nodes.map (n) -> n.includes.map (i) -> {source: n.name, target: i}
       edges = [].concat edges...
 
-      networkCenter = d3.forceCenter().x(700)
-      manyBody = d3.forceManyBody().strength(-50)
       linkForce = d3.forceLink(edges).id((d) -> d.name)
-      .distance((l) -> (l.source.members.length - l.target.members.length)*180)
-      .strength(0.2).iterations(5)
-      collideForce = d3.forceCollide().radius((d) -> 10).strength(1)
-
-      forceX = d3.forceX(1300).strength(0.01)
 
       updateNetwork = (e) ->
         d3.select("svg.main").selectAll "line"
