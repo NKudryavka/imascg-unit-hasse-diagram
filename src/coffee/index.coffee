@@ -13,6 +13,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
     fontSize = 9
     canvasWidth = 1800
     levelHeight = 120
+    cellSpace = 1
     classes = 
       selected: 'selected'
       inclusion: 'inclusion'
@@ -20,7 +21,7 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
     centerX = canvasWidth / 2
     wrapWidth = canvasWidth - 200
-    rowSpace = 2 * fontSize + 4
+    rowSpace = 2 * fontSize + cellSpace
     measureWidth = document.getElementById 'measureWidth'
     getTextWidth = (text) ->
       measureWidth.textContent = text
@@ -54,9 +55,9 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
       nodes = nodes.map (n) ->
         temp = (defxs[n.level][l] || 0 for l in [0...defxs[n.level].line])
         n.sublevel = temp.indexOf Math.min temp...
-        n.fx = (defxs[n.level][n.sublevel] || 0) + n.width/2 + 5
+        n.fx = (defxs[n.level][n.sublevel] || 0) + n.width/2 + cellSpace
         n.fy = (yPositions[n.level] || rowSpace) + n.sublevel * rowSpace
-        defxs[n.level][n.sublevel] = (defxs[n.level][n.sublevel] || 0) + n.width + 5
+        defxs[n.level][n.sublevel] = (defxs[n.level][n.sublevel] || 0) + n.width + cellSpace
         n
       .map (n) ->
         n.fx += centerX - defxs[n.level][n.sublevel]/2
@@ -148,16 +149,9 @@ document.addEventListener 'DOMContentLoaded', (loadEvent) ->
 
       ### 的場梨沙ちゃんをよろしくお願いします ###
       nodeEnter.append "text"
-      .classed 'svg-text-outer', true
-      .attr "y", 3
-      .style "stroke-width", (d) -> if d.name == '的場梨沙' then '0px' else "1px"
-      .style "font-size", "#{fontSize}px"
-      .text (d) -> d.name
-
-      nodeEnter.append "text"
       .classed 'svg-text-inner', true
       .attr "y", 3
-      .style "font-size", "#{fontSize}px"
+      .style "font-size", (d) -> if d.name == '的場梨沙' then "#{fontSize+0.5}px" else "#{fontSize}px"
       .text (d) -> d.name
 
       returnDefault()

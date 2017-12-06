@@ -1,10 +1,10 @@
 $selectedColor: red
 $inclusionColor: #05f
-$associatedColor: black
+$associatedColor: #777
 
 #diagram 
   width: 1800px
-  height: 1200px
+  height: 2300px
   margin: 0 auto
   svg
     width: 100%
@@ -24,7 +24,7 @@ g.edge
 
 g.node
   cursor: pointer
-  opacity: 0.5
+  opacity: 0.4
   rect
     fill: white
     stroke-width: 1.5px
@@ -32,9 +32,6 @@ g.node
   text
     text-anchor: middle
     fill: black
-    &.svg-text-outer 
-      stroke-opacity: 0.75
-      stroke: white
 
   &.selected
     opacity: 1
