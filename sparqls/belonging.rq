@@ -2,6 +2,7 @@ PREFIX schema: <http://schema.org/>
 
 SELECT ?idol ?belonging
 WHERE {
+  VALUES ?belonging {"CinderellaGirls"@en "765AS"@en "MillionStars"@en "315ProIdols"@en "283Pro"@en}
   ?s schema:name ?idol;
      schema:memberOf ?belonging.
 } 

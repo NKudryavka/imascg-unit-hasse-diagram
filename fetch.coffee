@@ -28,7 +28,7 @@ unless fs.existsSync saveDir
 
 intersection = (a, b) -> a.filter (v) -> v in b
 
-Promise.all (rp({uri: url, qs: {query: fs.readFileSync("sparqls/#{q}.sparql"), format: 'json'}}) for q in queries)
+Promise.all (rp({uri: url, qs: {query: fs.readFileSync("sparqls/#{q}.rq"), format: 'json'}}) for q in queries)
 .then (results) ->
   data = {}
   for result, query in results
