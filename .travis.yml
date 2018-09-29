@@ -1,5 +1,5 @@
 before_install: 
-  - npm cache clean
+  - npm cache verify
 language: node_js
 node_js:
 - 8
