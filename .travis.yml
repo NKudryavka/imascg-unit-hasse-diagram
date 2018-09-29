@@ -1,5 +1,5 @@
 before_install: 
-  - npm cache verify
+  - npm i -g npm@6.3.0
 language: node_js
 node_js:
 - 8
