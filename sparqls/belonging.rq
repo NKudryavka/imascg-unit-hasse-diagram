@@ -1,9 +1,9 @@
-PREFIX schema: <http://schema.org/>
 PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?idol ?belonging
 WHERE {
   VALUES ?belonging {"CinderellaGirls"@en "765AS"@en "MillionStars"@en "315ProIdols"@en "283Pro"@en}
-  ?s schema:name ?idol;
+  ?s rdfs:label ?idol;
      imas:Title ?belonging.
 } 
